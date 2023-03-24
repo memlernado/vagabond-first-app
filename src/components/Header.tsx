@@ -1,14 +1,17 @@
 import styled from "styled-components";
-import { Map, Menu, Sun, Moon } from "react-feather";
+import { Map, Menu, Sun, Moon, Command } from "react-feather";
 import type { Icon, IconProps } from "react-feather";
-import { Theme } from "../styled";
 import { themes } from "../styles/themes";
+import { Link, useLocation } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "store";
+import { toggleTheme } from "store/features/themeSlice";
 
-export const NAV_HEIGHT = "40px";
+export const NAV_HEIGHT = "70px";
 
 const TopNav = styled.nav`
   width: 100%;
   height: ${NAV_HEIGHT};
+  padding: 10px;
   display: grid;
   grid-template-columns: 1fr repeat(2, auto);
   column-gap: 15px;
@@ -32,11 +35,6 @@ const StyledButtonWithIcon = styled.button<{ size?: number | string }>`
   }
 `;
 
-interface HeaderProps {
-  toggleDarkMode: () => void;
-  theme: Theme;
-}
-
 type IButtonWithIcon = React.ComponentPropsWithoutRef<"button"> &
   IconProps & {
     Icon: Icon;
@@ -48,17 +46,24 @@ const ButtonWithIcon = ({ Icon, ...rest }: IButtonWithIcon) => (
   </StyledButtonWithIcon>
 );
 
-const Header: React.FC<HeaderProps> = ({ theme, toggleDarkMode }) => (
-  <TopNav>
-    <ButtonWithIcon Icon={Map} disabled name="Coming soon..." />
-    <ButtonWithIcon
-      Icon={theme === "dark" ? Sun : Moon}
-      onClick={toggleDarkMode}
-      color={themes[theme].color}
-      size={50}
-    />
-    <ButtonWithIcon Icon={Menu} disabled name="Coming soon..." />
-  </TopNav>
-);
+const Header: React.FC = () => {
+  const { pathname } = useLocation();
+  const theme = useAppSelector((state) => state.theme.theme);
+  const dispatch = useAppDispatch();
+  return (
+    <TopNav>
+      <Link to={pathname === "/map" ? "/" : "/map"}>
+        <ButtonWithIcon Icon={pathname === "/map" ? Command : Map} />
+      </Link>
+      <ButtonWithIcon
+        Icon={theme === "dark" ? Sun : Moon}
+        onClick={() => dispatch(toggleTheme())}
+        color={themes[theme].color}
+        size={50}
+      />
+      <ButtonWithIcon Icon={Menu} disabled name="Coming soon..." />
+    </TopNav>
+  );
+};
 
 export default Header;

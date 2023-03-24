@@ -1,34 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import Header, { NAV_HEIGHT } from "./components/Header";
-import TaskInput from "./components/TaskInput";
-import TodoCard from "./components/TodoCard";
-import { themes } from "./styles/themes";
-import type { RootState } from "./store";
-import { useAppDispatch, useAppSelector } from "./store";
-import { accountService } from "./services/appwrite";
-import { setUser } from "./store/features/authSlice";
-import { fetchTodos, toggleCompleted } from "./store/features/todosSlice";
+import Header from "components/Header";
+import { themes } from "styles/themes";
+import { useAppDispatch, useAppSelector } from "store";
+import { accountService } from "services/appwrite";
+import { setUser } from "store/features/authSlice";
+import { fetchTodos } from "store/features/todosSlice";
+import { Route, Routes } from "react-router-dom";
+import TodosPage from "components/TodosPage";
 
-const Layout = styled.main`
+const AppLayout = styled.main`
   height: 100vh;
-  display: grid;
-  justify-items: center;
-  grid-template-rows: ${NAV_HEIGHT} auto 1fr;
-  row-gap: 35px;
-  padding: 10px;
   background-color: ${({ theme }) => theme.pageBackgroundColor};
-`;
-
-const TodoList = styled.ul`
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin: 0;
-  padding: 80px 0 0 0;
-  list-style: none;
-  width: 100%;
-  max-width: 600px;
+  overflow: hidden;
 `;
 
 const getUser = async () => {
@@ -48,8 +32,7 @@ const getUser = async () => {
 };
 
 function App() {
-  const [isDarkMode, setDarkMode] = useState(false);
-  const todos = useAppSelector((state: RootState) => state.todos.todos);
+  const theme = useAppSelector((state) => state.theme.theme);
   const dispatch = useAppDispatch();
   useEffect(() => {
     getUser().then((s) => {
@@ -60,31 +43,14 @@ function App() {
     });
   }, []);
   return (
-    <ThemeProvider theme={themes[isDarkMode ? "dark" : "light"]}>
-      <Layout>
-        <Header
-          toggleDarkMode={() => setDarkMode(!isDarkMode)}
-          theme={isDarkMode ? "dark" : "light"}
-        />
-        <TaskInput />
-        <TodoList>
-          {todos.map((todo) => (
-            <TodoCard
-              key={todo.$id}
-              title={todo.title}
-              isCompleted={todo.isCompleted}
-              toggleCompleted={() =>
-                dispatch(
-                  toggleCompleted({
-                    $id: todo.$id,
-                    isCompleted: !todo.isCompleted,
-                  })
-                )
-              }
-            />
-          ))}
-        </TodoList>
-      </Layout>
+    <ThemeProvider theme={themes[theme]}>
+      <AppLayout>
+        <Header />
+        <Routes>
+          <Route path="/" element={<TodosPage />} />
+          <Route path="map" element={<></>} />
+        </Routes>
+      </AppLayout>
     </ThemeProvider>
   );
 }
