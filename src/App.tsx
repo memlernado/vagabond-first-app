@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import Header from "components/Header";
 import { themes } from "styles/themes";
@@ -6,8 +6,10 @@ import { useAppDispatch, useAppSelector } from "store";
 import { accountService } from "services/appwrite";
 import { setUser } from "store/features/authSlice";
 import { fetchTodos } from "store/features/todosSlice";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import TodosPage from "components/TodosPage";
+import Login from "components/Login";
+import RouteGuard from "components/RouteGuard";
 
 const AppLayout = styled.main`
   height: 100vh;
@@ -15,41 +17,47 @@ const AppLayout = styled.main`
   overflow: hidden;
 `;
 
-const getUser = async () => {
-  let appWriteUser;
-  try {
-    appWriteUser = await accountService.get();
-  } catch (error) {
-    try {
-      await accountService.createAnonymousSession();
-      appWriteUser = await accountService.get();
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  return appWriteUser;
-};
-
 function App() {
   const theme = useAppSelector((state) => state.theme.theme);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const [userResolved, setUserResolve] = useState(false);
+
   useEffect(() => {
-    getUser().then((s) => {
-      if (s) {
-        dispatch(setUser(s));
-        dispatch(fetchTodos());
-      }
-    });
+    accountService
+      .get()
+      .then((user) => {
+        if (user) {
+          dispatch(setUser(user));
+          dispatch(fetchTodos());
+        }
+      })
+      .catch((e) => {
+        if (e.code === 401) {
+          navigate("login");
+        }
+      })
+      .finally(() => setUserResolve(true));
   }, []);
+
   return (
     <ThemeProvider theme={themes[theme]}>
       <AppLayout>
         <Header />
-        <Routes>
-          <Route path="/" element={<TodosPage />} />
-          <Route path="map" element={<></>} />
-        </Routes>
+        {userResolved && (
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <RouteGuard>
+                  <TodosPage />
+                </RouteGuard>
+              }
+            />
+            <Route path="map" element={<RouteGuard></RouteGuard>} />
+            <Route path="login" element={<Login />} />
+          </Routes>
+        )}
       </AppLayout>
     </ThemeProvider>
   );

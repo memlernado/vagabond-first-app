@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Anchor } from "react-feather";
 import { addTodo } from "../store/features/todosSlice";
 import { useState } from "react";
-import { useAppDispatch } from "../store";
+import { useAppDispatch, useAppSelector } from "../store";
 
 const Form = styled.form`
   padding: 10px;
@@ -44,6 +44,7 @@ const Submit = styled.button`
 const TaskInput: React.FC = () => {
   const [newTodo, setNewTodo] = useState("");
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -56,7 +57,7 @@ const TaskInput: React.FC = () => {
     <Form onSubmit={handleSubmit} noValidate>
       <Input
         type="text"
-        placeholder="What are you crushing today?"
+        placeholder={`What are you crushing today ${user?.name ?? ""} ?`}
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"
