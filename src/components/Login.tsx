@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { GitHub } from "react-feather";
 import { ReactComponent as Astronaut } from "assets/vagabond.svg";
 import { ReactComponent as GoogleLogo } from "assets/google-logo.svg";
@@ -44,9 +44,22 @@ const AuthProviderButton = styled.button`
   }
 `;
 
+const float = keyframes`
+	0% {
+		transform: translatey(0px);
+	}
+	50% {
+		transform: translatey(-20px);
+	}
+	100% {
+		transform: translatey(0px);
+	}
+`;
+
 const AppLogo = styled.div`
   width: 250px;
   height: 250px;
+  animation: ${float} 4s ease-in-out infinite;
   & svg {
     width: 250px;
     height: 250px;
@@ -62,9 +75,12 @@ const Google = styled(GoogleLogo)`
 const Login: React.FC = () => {
   const user = useAppSelector((state) => state.auth.user);
   if (user) return <Navigate to="/" />;
-
   const handleLogin = async (provider: "google" | "github") =>
-    await accountService.createOAuth2Session(provider, "http://localhost:5173");
+    await accountService.createOAuth2Session(
+      provider,
+      import.meta.env.VITE_APP_URI,
+      import.meta.env.VITE_APP_URI
+    );
 
   return (
     <ViewContainer>
