@@ -8,6 +8,7 @@ import { setUser } from "store/features/authSlice";
 import { fetchTodos } from "store/features/todosSlice";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import TodosPage from "components/TodosPage";
+import MapPage from "components/MapPage";
 import Login from "components/Login";
 import RouteGuard from "components/RouteGuard";
 
@@ -54,7 +55,14 @@ function App() {
                 </RouteGuard>
               }
             />
-            <Route path="map" element={<RouteGuard></RouteGuard>} />
+            <Route
+              path="map"
+              element={
+                <RouteGuard>
+                  <MapPage />
+                </RouteGuard>
+              }
+            />
             <Route path="login" element={<Login />} />
           </Routes>
         )}

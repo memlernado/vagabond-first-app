@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Map, Menu, Sun, Moon, Command, LogOut } from "react-feather";
+import { Map, Sun, Moon, Command, LogOut } from "react-feather";
 import type { Icon, IconProps } from "react-feather";
 import { themes } from "../styles/themes";
 import { Link, useLocation } from "react-router-dom";

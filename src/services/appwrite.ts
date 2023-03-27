@@ -1,4 +1,4 @@
-import { Client, Account, Databases } from "appwrite";
+import { Client, Account, Databases, Locale } from "appwrite";
 import type { ITodo } from "../types/todo";
 
 const DB = import.meta.env.VITE_DB_ID;
@@ -13,14 +13,21 @@ client
 export const accountService = new Account(client);
 
 const db = new Databases(client);
+export const localeService = new Locale(client);
 
 export const todosService = {
   listTodos: async () => {
     const res = await db.listDocuments<ITodo>(DB, TODOS_COLLECTION);
     return res.documents;
   },
-  createTodo: async (id: string, todo: Pick<ITodo, "title">) =>
-    await db.createDocument(DB, TODOS_COLLECTION, id, todo),
+  createTodo: async (
+    id: string,
+    todo: Pick<ITodo, "title" | "countryCode">
+  ) => {
+    return db.createDocument(DB, TODOS_COLLECTION, id, {
+      ...todo,
+    });
+  },
   updateTodo: async (
     id: string,
     todo: Partial<Pick<ITodo, "title" | "isCompleted">>
