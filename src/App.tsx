@@ -3,14 +3,25 @@ import styled, { ThemeProvider } from "styled-components";
 import Header from "components/Header";
 import { themes } from "styles/themes";
 import { useAppDispatch, useAppSelector } from "store";
-import { accountService } from "services/appwrite";
+import {
+  accountService,
+  appwriteClient,
+  TODOS_RT_CHANNEL,
+  TODOS_RT_EVENTS,
+} from "services/appwrite";
 import { setUser } from "store/features/authSlice";
-import { fetchTodos } from "store/features/todosSlice";
+import {
+  addLocalTodo,
+  deleteLocalTodo,
+  fetchTodos,
+  updateLocalTodo,
+} from "store/features/todosSlice";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import TodosPage from "components/TodosPage";
 import MapPage from "components/MapPage";
 import Login from "components/Login";
 import RouteGuard from "components/RouteGuard";
+import { ITodo } from "types/todo";
 
 const AppLayout = styled.main`
   height: 100vh;
@@ -39,6 +50,21 @@ function App() {
         }
       })
       .finally(() => setUserResolve(true));
+  }, []);
+
+  useEffect(() => {
+    const unsub = appwriteClient.subscribe<ITodo>(
+      TODOS_RT_CHANNEL,
+      ({ events, payload }) => {
+        if (events.includes(TODOS_RT_EVENTS.update))
+          dispatch(updateLocalTodo(payload));
+        else if (events.includes(TODOS_RT_EVENTS.create))
+          dispatch(addLocalTodo(payload));
+        else if (events.includes(TODOS_RT_EVENTS.delete))
+          dispatch(deleteLocalTodo(payload));
+      }
+    );
+    return () => unsub();
   }, []);
 
   return (

@@ -15,7 +15,7 @@ export const ScrollAreaScrollbar = styled(ScrollArea.Scrollbar)`
   user-select: none;
   // disable browser handling of all panning and zooming gestures on touch devices
   touch-action: none;
-  padding: 2;
+  padding: 2px;
   background-color: ${({ theme }) => theme.pageBackgroundColor};
 
   &[data-orientation="vertical"] {

@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { Anchor } from "react-feather";
-import { addTodo } from "../store/features/todosSlice";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
+import { todosService } from "services/appwrite";
 
 export const INPUT_HEIGHT = "45px";
 const Form = styled.form`
@@ -51,10 +51,10 @@ const TaskInput: React.FC = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (newTodo) {
-      dispatch(addTodo(newTodo));
+      await todosService.createTodo({ title: newTodo });
       setNewTodo("");
     }
   };

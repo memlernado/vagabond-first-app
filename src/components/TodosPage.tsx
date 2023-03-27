@@ -1,7 +1,7 @@
 import TaskInput, { INPUT_HEIGHT } from "components/TaskInput";
 import TodoCard from "components/TodoCard";
+import { todosService } from "services/appwrite";
 import { useAppDispatch, useAppSelector } from "store";
-import { toggleCompleted } from "store/features/todosSlice";
 import styled from "styled-components";
 import { NAV_HEIGHT } from "./Header";
 import {
@@ -37,7 +37,6 @@ const Layout = styled.div`
 
 const TodosPage: React.FC = () => {
   const todos = useAppSelector((state) => state.todos.todos);
-  const dispatch = useAppDispatch();
 
   return (
     <Layout>
@@ -52,12 +51,9 @@ const TodosPage: React.FC = () => {
                 title={todo.title}
                 isCompleted={todo.isCompleted}
                 toggleCompleted={() =>
-                  dispatch(
-                    toggleCompleted({
-                      $id: todo.$id,
-                      isCompleted: !todo.isCompleted,
-                    })
-                  )
+                  todosService.updateTodo(todo.$id, {
+                    isCompleted: !todo.isCompleted,
+                  })
                 }
               />
             ))}
