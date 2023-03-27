@@ -12,7 +12,7 @@ const Map = styled(MapContainer)`
   background-color: ${({ theme }) => theme.pageBackgroundColor};
 `;
 
-type CountryProperties = { id: string; NAME_EN: string; ISO_A2: string };
+type CountryProperties = { NAME_EN: string; ISO_A2: string };
 type CountryFeature = Feature<Geometry, CountryProperties> | undefined;
 const countries = data as FeatureCollection<Geometry, CountryProperties>;
 
