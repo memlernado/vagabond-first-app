@@ -4,6 +4,7 @@ import { addTodo } from "../store/features/todosSlice";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
 
+export const INPUT_HEIGHT = "45px";
 const Form = styled.form`
   padding: 10px;
   display: grid;
@@ -11,6 +12,7 @@ const Form = styled.form`
   position: relative;
   width: 100%;
   max-width: 600px;
+  height: ${INPUT_HEIGHT};
   background-color: #ffffff;
   border-radius: ${({ theme }) => theme.borderRadius};
   overflow: hidden;

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { ITodo } from "../types/todo";
 
-const TodoItem = styled.li<{ isCompleted: boolean }>`
+const TodoItem = styled.div<{ isCompleted: boolean }>`
   cursor: pointer;
   display: flex;
   align-items: center;
