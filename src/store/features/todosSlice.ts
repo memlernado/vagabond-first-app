@@ -14,12 +14,8 @@ export const addTodo = createAsyncThunk(
   async (title: string) => {
     const $id = ID.unique();
     const { countryCode } = await localeService.get();
-    await todosService.createTodo($id, { title, countryCode });
-    return {
-      $id,
-      title,
-      countryCode,
-    };
+    const newTodo = await todosService.createTodo($id, { title, countryCode });
+    return newTodo;
   }
 );
 

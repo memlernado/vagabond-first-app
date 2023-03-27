@@ -24,12 +24,12 @@ export const todosService = {
     id: string,
     todo: Pick<ITodo, "title" | "countryCode">
   ) => {
-    return db.createDocument(DB, TODOS_COLLECTION, id, {
+    return db.createDocument<ITodo>(DB, TODOS_COLLECTION, id, {
       ...todo,
     });
   },
   updateTodo: async (
     id: string,
     todo: Partial<Pick<ITodo, "title" | "isCompleted">>
-  ) => await db.updateDocument(DB, TODOS_COLLECTION, id, todo),
+  ) => await db.updateDocument<ITodo>(DB, TODOS_COLLECTION, id, todo),
 };

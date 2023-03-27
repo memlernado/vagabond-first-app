@@ -26,6 +26,9 @@ const Form = styled.form`
 const Input = styled.input`
   border: none;
   outline: none;
+  &:placeholder-shown {
+    text-overflow: ellipsis;
+  }
 `;
 
 const Submit = styled.button`
