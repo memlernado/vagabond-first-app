@@ -1,5 +1,5 @@
 import { Client, Account, Databases, Locale, ID } from "appwrite";
-import type { ITodo } from "../types/todo";
+import type { BaseTodo, ITodo } from "../types/todo";
 
 const DB = import.meta.env.VITE_DB_ID;
 const TODOS_COLLECTION = import.meta.env.VITE_TODOS_COLLECTION_ID;
@@ -30,8 +30,7 @@ export const todosService = {
     const res = await db.listDocuments<ITodo>(DB, TODOS_COLLECTION);
     return res.documents;
   },
-  createTodo: async (todo: Pick<ITodo, "title">) => {
-    const $id = ID.unique();
+  createTodo: async ({ $id, ...todo }: Omit<BaseTodo, "countryCode">) => {
     const { countryCode } = await localeService.get();
     return db.createDocument<ITodo>(DB, TODOS_COLLECTION, $id, {
       ...todo,

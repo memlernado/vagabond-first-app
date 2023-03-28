@@ -61,7 +61,7 @@ function App() {
         else if (events.includes(TODOS_RT_EVENTS.create))
           dispatch(addLocalTodo(payload));
         else if (events.includes(TODOS_RT_EVENTS.delete))
-          dispatch(deleteLocalTodo(payload));
+          dispatch(deleteLocalTodo(payload.$id));
       }
     );
     return () => unsub();

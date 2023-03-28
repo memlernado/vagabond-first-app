@@ -4,3 +4,8 @@ export interface ITodo extends Models.Document {
   isCompleted?: boolean;
   countryCode: string;
 }
+
+export type BaseTodo = Pick<
+  ITodo,
+  "$id" | "title" | "isCompleted" | "countryCode"
+>;

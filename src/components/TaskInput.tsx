@@ -1,8 +1,10 @@
 import styled from "styled-components";
 import { Anchor } from "react-feather";
+import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
 import { todosService } from "services/appwrite";
+import { addLocalTodo, deleteLocalTodo } from "store/features/todosSlice";
 
 export const INPUT_HEIGHT = "45px";
 const Form = styled.form`
@@ -54,8 +56,22 @@ const TaskInput: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (newTodo) {
-      await todosService.createTodo({ title: newTodo });
-      setNewTodo("");
+      const $id = uuidv4();
+      dispatch(
+        addLocalTodo({
+          $id,
+          countryCode: "",
+          title: newTodo,
+        })
+      );
+      try {
+        await todosService.createTodo({ $id, title: newTodo });
+      } catch (error) {
+        // TODO: Show error toast
+        dispatch(deleteLocalTodo($id));
+      } finally {
+        setNewTodo("");
+      }
     }
   };
   return (
